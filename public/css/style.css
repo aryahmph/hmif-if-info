@@ -1,0 +1,29 @@
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
+.btn-primary {
+  background-color: #3C3C3C;
+}
+
+.list-group-item.active {
+  background-color: #3C3C3C;
+}
+.page-item.active .page-link {
+  background-color: #3C3C3C;
+}
+
+.btn-primary:hover {
+  background-color: #162B45;
+}
+
+/* Newest Info */
+.newest-info {
+  margin-bottom: 7em;
+}
+
+.upload-date {
+  font-size: .8rem;
+}
+
+
