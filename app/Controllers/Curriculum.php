@@ -4,12 +4,15 @@
 namespace App\Controllers;
 
 
+use App\Models\CurriculumDetailModel;
 use App\Models\CurriculumModel;
 use App\Models\KurikulumModel;
+use CodeIgniter\Exceptions\PageNotFoundException;
 
 class Curriculum extends BaseController
 {
     private CurriculumModel $curriculumModel;
+    private CurriculumDetailModel $curriculumDetailModel;
 
     /**
      * Curriculum constructor.
@@ -17,16 +20,30 @@ class Curriculum extends BaseController
     public function __construct()
     {
         $this->curriculumModel = new CurriculumModel();
+        $this->curriculumDetailModel = new CurriculumDetailModel();
     }
 
     public function index()
     {
-
         $data = array(
             'title' => 'Daftar Kurikulum',
-            'semester' => $this->curriculumModel->getSemesters()
+            'semesters' => $this->curriculumModel->getSemesters()
+        );
+        return view('pages/CurriculumView', $data);
+    }
+
+    public function detail($slug)
+    {
+        if (!$this->curriculumModel->existSlug($slug)) {
+            throw new PageNotFoundException();
+        }
+        $query = $this->curriculumDetailModel->getDetails($slug);
+        $data = array(
+            'title' => $query[0]['semesterName'],
+            'semesterDesc' => $query[0]['semesterDesc'],
+            'query' => $query
         );
 
-        return view('pages/CurriculumView', $data);
+        return view('pages/CurriculumDetailView', $data);
     }
 }

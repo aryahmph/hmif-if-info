@@ -7,18 +7,18 @@
             <div class="col-12 text-center mb-3 mb-lg-5">
                 <h3 class="fw-bold">Tentang Kuliah</h3>
             </div>
-            <div class="col-lg-3 mb-4">
-                <div class="card text-dark bg-light mb-3">
-                    <div class="card-header">Mata Kuliah</div>
-                    <div class="card-body">
-                        <h5 class="card-title">Semester 1</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
-                            the
-                            card's content.</p>
-                        <a href="matkul.html" class="btn btn-outline-secondary btn-sm">Lihat Matkul</a>
+            <?php foreach ($semesters as $semester) : ?>
+                <div class="col-lg-3 mb-4">
+                    <div class="card text-dark bg-light mb-3">
+                        <div class="card-header">Mata Kuliah</div>
+                        <div class="card-body">
+                            <h5 class="card-title"><?= $semester['name'] ?></h5>
+                            <p class="card-text"><?= $semester['description'] ?></p>
+                            <a href="matkul.html" class="btn btn-outline-secondary btn-sm">Lihat Matkul</a>
+                        </div>
                     </div>
                 </div>
-            </div>
+            <?php endforeach; ?>
         </div>
         <!--  End of Mata Kuliah  -->
     </div>

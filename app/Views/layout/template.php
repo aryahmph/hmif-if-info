@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="<?= base_url('css/bootstrap.min.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('css/style.css') ?>">
 
     <!--    Font-->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -20,7 +20,7 @@
 
 <?php $this->renderSection('content'); ?>
 
-<script src="js/bootstrap.bundle.min.js"></script>
+<script src="<?= base_url('js/bootstrap.bundle.min.js') ?>"></script>
 
 </body>
 </html>
