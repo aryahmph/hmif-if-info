@@ -1,63 +1,276 @@
-# CodeIgniter 4 Application Starter
+# HMIF INFO PAGE
 
-## What is CodeIgniter?
+Sebuah bagian halaman web dari [HMIF UNSRI](hmifunsri.org)
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](http://codeigniter.com).
+## Requirements
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+- CodeIgniter 4
+- PHP 7.4 or higher
 
-More information about the plans for version 4 can be found in [the announcement](http://forum.codeigniter.com/thread-62615.html) on the forums.
+## Endpoint
 
-The user guide corresponding to this version of the framework can be found
-[here](https://codeigniter4.github.io/userguide/).
+- /info
+- /info/slug
+- /curriculum
+- /curriculum/slug
 
-## Installation & updates
+## Image Info
+Aturan dari ukuran foto pada info adalah wajib 565x400 (lihat di public folder)
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+## Database Design
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+![Database Design](courses.png)
 
-## Setup
+## Database Syntax
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+### Create semesters
 
-## Important Change with index.php
+```mariadb
+CREATE TABLE semesters
+(
+    id              INT         NOT NULL AUTO_INCREMENT,
+    name            VARCHAR(50) NOT NULL,
+    slug            VARCHAR(50) NOT NULL,
+    description     TEXT        NOT NULL DEFAULT '',
+    references_link VARCHAR(255),
+    PRIMARY KEY (id),
+    UNIQUE KEY slug_unique (slug),
+    INDEX name_index (name),
+    INDEX description_index (description),
+    INDEX references_link_index (references_link)
+);
+```
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+### Create courses
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+```mariadb
+CREATE TABLE courses
+(
+    id          INT         NOT NULL AUTO_INCREMENT,
+    id_semester INT         NOT NULL,
+    name        VARCHAR(50) NOT NULL,
+    PRIMARY KEY (id),
+    INDEX name_index (name),
+    CONSTRAINT fk_course_semester
+        FOREIGN KEY (id_semester) REFERENCES semesters (id)
+);
+```
 
-**Please** read the user guide for a better explanation of how CI4 works!
+### Create subjects
 
-## Repository Management
+```mariadb
+CREATE TABLE subjects
+(
+    id          INT          NOT NULL AUTO_INCREMENT,
+    id_course   INT          NOT NULL,
+    name        VARCHAR(100) NOT NULL,
+    description TEXT         NOT NULL DEFAULT '',
+    PRIMARY KEY (id),
+    INDEX name_index (name),
+    INDEX description_index (description),
+    CONSTRAINT fk_subject_course
+        FOREIGN KEY (id_course) REFERENCES courses (id)
+);
+```
 
-We use Github issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
+### Create infos
 
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
+```mariadb
+CREATE TABLE infos
+(
+    id          INT          NULL AUTO_INCREMENT,
+    title       VARCHAR(255) NOT NULL,
+    slug        VARCHAR(255) NOT NULL,
+    description TEXT         NOT NULL,
+    image       VARCHAR(255) NOT NULL,
+    body        TEXT         NOT NULL,
+    created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY slug_unique (slug),
+    INDEX description_index (description),
+    INDEX title_index (title),
+    INDEX image_index (image),
+    INDEX body_index (body),
+    INDEX created_at_index (created_at)
+);
+```
 
-## Server Requirements
+### Insert semesters
 
-PHP version 7.3 or higher is required, with the following extensions installed:
+```mariadb
+INSERT INTO semesters(name, slug, description)
+VALUES ('Semester 1', 'semester-1',
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut egestas efficitur vestibulum. Aliquam tristique felis in nunc luctus, ut vestibulum velit ornare. Mauris porta ultrices tortor in sodales. Integer metus eros, commodo eu dui nec, faucibus aliquam lorem. Aliquam vehicula purus vehicula diam maximus dapibus. Etiam quis pharetra nibh. Curabitur ante sapien, ullamcorper sed ligula nec, semper gravida metus. Curabitur a massa sed eros ullamcorper porta ac vitae mi. Duis vestibulum dignissim sem id blandit. Nam sem tellus, fermentum eu nisi at, imperdiet maximus mauris. Ut velit lectus, ornare eget dignissim ut, accumsan sed erat. Suspendisse posuere cursus erat, at interdum ex pharetra ut. Mauris nec enim et ex convallis volutpat non a odio.'),
+       ('Semester 2', 'semester-2',
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut egestas efficitur vestibulum. Aliquam tristique felis in nunc luctus, ut vestibulum velit ornare. Mauris porta ultrices tortor in sodales. Integer metus eros, commodo eu dui nec, faucibus aliquam lorem. Aliquam vehicula purus vehicula diam maximus dapibus. Etiam quis pharetra nibh. Curabitur ante sapien, ullamcorper sed ligula nec, semper gravida metus. Curabitur a massa sed eros ullamcorper porta ac vitae mi. Duis vestibulum dignissim sem id blandit. Nam sem tellus, fermentum eu nisi at, imperdiet maximus mauris. Ut velit lectus, ornare eget dignissim ut, accumsan sed erat. Suspendisse posuere cursus erat, at interdum ex pharetra ut. Mauris nec enim et ex convallis volutpat non a odio.');
+```
 
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+### Insert courses
 
-Additionally, make sure that the following extensions are enabled in your PHP:
+```mariadb
+INSERT INTO courses(id_semester, name)
+VALUES (1, 'Algoritma dan Pemograman I'),
+       (1, 'Fisika Dasar');
+```
 
-- json (enabled by default - don't turn it off)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php)
-- xml (enabled by default - don't turn it off)
+### Insert subjects
+
+```mariadb
+INSERT INTO subjects(id_course, name, description)
+VALUES (1, 'Pengenalan Pemograman',
+        'Mengenalkan hal-hal dasar yang berkaitan dengan pemograman, seperti bahasa dan tools-tools pendukung'),
+       (1, 'Algoritma',
+        'Mempelajari dasar algortima, seperti apa itu algoritma, bagaimana ia berjalan, notasi algoritma seperti Flowchart, Pseudo-Code'),
+       (2, 'Kecepatan dan Apa lupa',
+        'Mempelajari sifat dari kecepatan yaitu pemarah dan gabutan.');
+```
+
+### Insert infos
+
+```mariadb
+INSERT INTO infos(title, slug, description, image, body)
+VALUES ('Ini Judul Yang Keren Banget Mwehehe', 'ini-judul-yang-keren-banget-mwehehe',
+        'Hehe Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus, doloribus hic inventore maiores necessitatibus perferendis sunt tempore veritatis. Cupiditate, ducimus, libero? Autem commodi corporis deleniti quis repellendus. Enim, officiis veniam.',
+        'dummy-info.jpg', '<p>
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Facere hic
+            assumenda incidunt similique culpa soluta, sit iste illo cumque
+            fugiat obcaecati impedit molestias quaerat architecto asperiores
+            neque dicta laudantium veritatis.
+          </p>
+          <p>
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Deleniti
+            excepturi dolorum est, dolore suscipit cupiditate quos quidem libero
+            esse! Reiciendis eaque esse sequi explicabo a. Provident quibusdam
+            facere vero animi sed modi ipsa accusamus libero eaque ea odio iste,
+            fuga explicabo nihil error culpa commodi, rem hic neque. Saepe,
+            placeat. Saepe dicta sit veniam unde expedita architecto illo
+            suscipit nobis odit laudantium deleniti, eum odio eaque. Eligendi
+            facilis doloribus quod deleniti asperiores magnam, beatae excepturi
+            nostrum quo repellat sunt voluptas quasi. Perferendis, sed optio!
+            Laborum repellendus, delectus fugit dignissimos modi sint laudantium
+            illum facilis repellat perferendis maiores, repudiandae quibusdam
+            ab.
+          </p>
+
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt,
+            ipsum :
+          </p>
+          <ol>
+            <li>
+              <h5>Lorem ipsum dolor sit amet.</h5>
+              <p>
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                Ducimus voluptates eligendi sed. Lorem ipsum dolor sit amet
+                consectetur adipisicing elit. Est reprehenderit fuga
+                exercitationem. Omnis quo natus quaerat voluptatem quisquam
+                mollitia labore reiciendis rem eveniet provident odio hic
+                expedita, nesciunt blanditiis minus.
+              </p>
+            </li>
+            <li>
+              <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime
+                odio id rem omnis corrupti laboriosam, eveniet dolores
+                blanditiis, ut, quibusdam nesciunt suscipit!
+              </p>
+            </li>
+            <li>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Recusandae fugiat atque est soluta quibusdam nostrum aut eligendi
+              quo excepturi minima mollitia similique voluptates optio,
+              accusantium facere at corporis quisquam fuga.
+            </li>
+          </ol>'),
+       ('Ini Judul Yang Keren Banget', 'ini-judul-yang-keren-banget',
+        'Hehe Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus, doloribus hic inventore maiores necessitatibus perferendis sunt tempore veritatis. Cupiditate, ducimus, libero? Autem commodi corporis deleniti quis repellendus. Enim, officiis veniam.',
+        'dummy-info.jpg', '<p>
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Facere hic
+            assumenda incidunt similique culpa soluta, sit iste illo cumque
+            fugiat obcaecati impedit molestias quaerat
+          </p>
+          <p>
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Deleniti
+            excepturi dolorum est, dolore suscipit cupiditate quos quidem libero
+            esse! Reiciendis eaque esse sequi explicabo a. Provident quibusdam
+            facere vero animi sed modi ipsa accusamus libero eaque ea odio iste,
+          </p>
+
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt,
+            ipsum :
+          </p>
+          <ol>
+            <li>
+              <h5>Lorem ipsum dolor sit amet.</h5>
+              <p>
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                Ducimus voluptates eligendi sed. Lorem ipsum dolor sit amet
+                consectetur adipisicing elit. Est reprehenderit fuga
+                exercitationem. Omnis quo natus quaerat voluptatem quisquam
+                mollitia labore reiciendis rem eveniet provident odio hic
+                expedita, nesciunt blanditiis minus.
+              </p>
+            </li>
+            <li>
+              <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime
+                odio id rem omnis corrupti laboriosam, eveniet dolores
+                blanditiis, ut, quibusdam nesciunt suscipit!
+              </p>
+            </li>
+            <li>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Recusandae fugiat atque est soluta quibusdam nostrum aut eligendi
+              quo excepturi minima mollitia similique voluptates optio,
+              accusantium facere at corporis quisquam fuga.
+            </li>
+          </ol>'),
+       ('Ini Judul Yang Keren Bangettt', 'ini-judul-yang-keren-bangettt',
+        'Hehe Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus, doloribus hic inventore maiores necessitatibus perferendis sunt tempore veritatis. Cupiditate, ducimus, libero? Autem commodi corporis deleniti quis repellendus. Enim, officiis veniam.',
+        'dummy-info.jpg', '<p>
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Facere hic
+            assumenda incidunt similique culpa soluta, sit iste illo cumque
+            fugiat obcaecati impedit molestias quaerat architecto asperiores
+            neque dicta laudantium veritatis.
+          </p>
+          <p>
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Deleniti
+            excepturi dolorum est, dolore suscipit cupiditate quos quidem libero
+            esse! Reiciendis eaque esse sequi explicabo a. Provident quibusdam
+            facere verolectus fugit dignissimos modi sint laudantium
+            illum facilis repellat perferendis maiores, repudiandae quibusdam
+            ab.
+          </p>
+
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt,
+            ipsum :
+          </p>
+          <ol>
+            <li>
+              <h5>Lorem ipsum dolor sit amet.</h5>
+              <p>
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                Ducimus voluptates eligendi sed. Lorem ipsum dolor sit amet
+                consectetur adipisicing elit. Est reprehenderit fuga
+                exercitationem. Omnis quo natus quaerat voluptatem quisquam
+                mollitia labore reiciendis rem eveniet provident odio hic
+                expedita, nesciunt blanditiis minus.
+              </p>
+            </li>
+            <li>
+              <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime
+                odio id rem omnis corrupti laboriosam, eveniet dolores
+                blanditiis, ut, quibusdam nesciunt suscipit!
+              </p>
+            </li>
+            <li>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Recusandae fugiat atque est soluta quibusdam nostrum aut eligendi
+              quo excepturi minima mollitia similique voluptates optio,
+              accusantium facere at corporis quisquam fuga.
+            </li>
+          </ol>');
+```
