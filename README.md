@@ -2,7 +2,7 @@
 
 Sebuah bagian halaman web dari [HMIF UNSRI](hmifunsri.org)
 
-![vid](demo-vid.gif)
+![vid](demo-video.gif)
 
 ## Requirements
 
