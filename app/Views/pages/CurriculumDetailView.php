@@ -5,8 +5,8 @@
             <div class="col">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="#">Beranda</a></li>
-                        <li class="breadcrumb-item"><a href="#">IF Info</a></li>
+                        <li class="breadcrumb-item"><a href="<?= base_url(); ?>">Beranda</a></li>
+                        <li class="breadcrumb-item"><a href="<?= base_url(); ?>/curriculum">Kurikulum</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Semester 1</li>
                     </ol>
                 </nav>
@@ -66,7 +66,7 @@
             </div>
         </div>
         <div class="col-12">
-            <a href="index.html" class="btn btn-primary mt-5">Kembali</a>
+            <a href="<?= base_url(); ?>/curriculum" class="btn btn-primary mt-5">Kembali</a>
         </div>
     </div>
 <?php $this->endSection(); ?>

@@ -13,8 +13,9 @@
                         <div class="card-header">Mata Kuliah</div>
                         <div class="card-body">
                             <h5 class="card-title"><?= $semester['name'] ?></h5>
-                            <p class="card-text"><?= $semester['description'] ?></p>
-                            <a href="matkul.html" class="btn btn-outline-secondary btn-sm">Lihat Matkul</a>
+                            <p class="card-text elipsis"><?= $semester['description'] ?></p>
+                            <a href="<?= base_url() . '/curriculum/' . $semester['slug'] ?>"
+                               class="btn btn-outline-secondary btn-sm">Lihat Matkul</a>
                         </div>
                     </div>
                 </div>

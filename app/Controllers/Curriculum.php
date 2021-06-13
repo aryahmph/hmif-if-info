@@ -29,6 +29,8 @@ class Curriculum extends BaseController
             'title' => 'Daftar Kurikulum',
             'semesters' => $this->curriculumModel->getSemesters()
         );
+
+//        dd($data);
         return view('pages/CurriculumView', $data);
     }
 
@@ -38,6 +40,10 @@ class Curriculum extends BaseController
             throw new PageNotFoundException();
         }
         $query = $this->curriculumDetailModel->getDetails($slug);
+
+        if (empty($query)) {
+            throw new PageNotFoundException("Empty data, please insert more data in database");
+        }
         $data = array(
             'title' => $query[0]['semesterName'],
             'semesterDesc' => $query[0]['semesterDesc'],

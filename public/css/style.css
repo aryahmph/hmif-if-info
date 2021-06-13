@@ -9,6 +9,7 @@ body {
 .list-group-item.active {
   background-color: #3C3C3C;
 }
+
 .page-item.active .page-link {
   background-color: #3C3C3C;
 }
@@ -26,4 +27,35 @@ body {
   font-size: .8rem;
 }
 
+.elipsis {
+  height: 8em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
+.title {
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
+.title p {
+  margin-top: 1em;
+  font-size: 0.9rem;
+}
+.img-hero img {
+  width: 40vmax;
+}
+
+.body-text {
+  margin-top: 3em;
+  margin-bottom: 3em;
+}
+.body-text p {
+  font-size: 1.125rem;
+}
+.body-text li p {
+  font-size: 1.05rem;
+  margin-top: 0.5em;
+}
+.body-text li {
+  margin-top: 1em;
+}
