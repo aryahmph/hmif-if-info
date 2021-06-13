@@ -33,6 +33,7 @@ $routes->setAutoRoute(true);
 // route since we don't have to scan directories.
 $routes->get('/', 'Home::index');
 $routes->get("curriculum/(:segment)", 'Curriculum::detail/$1');
+$routes->get("info/(:segment)", 'Info::detail/$1');
 
 /*
  * --------------------------------------------------------------------
