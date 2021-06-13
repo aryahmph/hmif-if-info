@@ -9,6 +9,9 @@ Sebuah bagian halaman web dari [HMIF UNSRI](hmifunsri.org)
 - CodeIgniter 4
 - PHP 7.4 or higher
 
+## How to Run
+> php spark serve
+
 ## Endpoint
 
 - /info
