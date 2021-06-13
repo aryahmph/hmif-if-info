@@ -2,6 +2,8 @@
 
 Sebuah bagian halaman web dari [HMIF UNSRI](hmifunsri.org)
 
+![vid](demo-vid.gif)
+
 ## Requirements
 
 - CodeIgniter 4
